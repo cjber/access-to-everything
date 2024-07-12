@@ -49,6 +49,8 @@ cloudpickle==3.0.0
     # via distributed
 coloredlogs==14.0
     # via dagster
+contourpy==1.2.1
+    # via matplotlib
 croniter==2.0.5
     # via dagster
 cuda-python==12.5.0
@@ -65,18 +67,20 @@ cupy-cuda12x==13.2.0
     # via cudf-cu12
     # via cugraph-cu12
     # via dask-cudf-cu12
-dagster==1.7.12
+cycler==0.12.1
+    # via matplotlib
+dagster==1.7.13
     # via access-to-everything
     # via dagster-graphql
     # via dagster-postgres
     # via dagster-webserver
-dagster-graphql==1.7.12
+dagster-graphql==1.7.13
     # via dagster-webserver
-dagster-pipes==1.7.12
+dagster-pipes==1.7.13
     # via dagster
-dagster-postgres==0.23.12
+dagster-postgres==0.23.13
     # via access-to-everything
-dagster-webserver==1.7.12
+dagster-webserver==1.7.13
     # via access-to-everything
 dask==2024.5.1
     # via dask-expr
@@ -103,6 +107,8 @@ fastrlock==0.8.2
     # via cupy-cuda12x
 filelock==3.15.4
     # via dagster
+fonttools==4.53.1
+    # via matplotlib
 frozenlist==1.4.1
     # via aiohttp
     # via aiosignal
@@ -148,6 +154,8 @@ jinja2==3.1.4
     # via distributed
 joblib==1.4.2
     # via raft-dask-cu12
+kiwisolver==1.4.5
+    # via matplotlib
 libucx-cu12==1.15.0.post1
     # via ucx-py-cu12
     # via ucxx-cu12
@@ -163,6 +171,8 @@ markdown-it-py==3.0.0
 markupsafe==2.1.5
     # via jinja2
     # via mako
+matplotlib==3.9.1
+    # via access-to-everything
 mdurl==0.1.2
     # via markdown-it-py
 msgpack==1.0.8
@@ -178,12 +188,14 @@ numba==0.60.0
     # via raft-dask-cu12
     # via rmm-cu12
 numpy==1.26.4
+    # via contourpy
     # via cudf-cu12
     # via cugraph-cu12
     # via cupy-cuda12x
     # via dask-cuda
     # via dask-cudf-cu12
     # via geopandas
+    # via matplotlib
     # via numba
     # via pandas
     # via pyarrow
@@ -203,6 +215,7 @@ packaging==24.1
     # via dask
     # via distributed
     # via geopandas
+    # via matplotlib
     # via pyogrio
 pandas==2.2.2
     # via cudf-cu12
@@ -214,6 +227,8 @@ partd==1.4.2
     # via dask
 pendulum==3.0.0
     # via dagster
+pillow==10.4.0
+    # via matplotlib
 polars==1.1.0
     # via ukroutes
 protobuf==4.25.3
@@ -247,11 +262,19 @@ pynvml==11.4.1
 pyogrio==0.9.0
     # via geopandas
     # via ukroutes
+pyparsing==3.1.2
+    # via matplotlib
 pyproj==3.6.1
     # via geopandas
+pyqt6==6.7.0
+    # via access-to-everything
+pyqt6-qt6==6.7.2
+    # via pyqt6
+pyqt6-sip==13.6.0
+    # via pyqt6
 python-dateutil==2.9.0.post0
     # via croniter
-    # via dagster
+    # via matplotlib
     # via pandas
     # via pendulum
     # via time-machine
@@ -285,7 +308,6 @@ requests-toolbelt==1.0.0
 rich==13.7.1
     # via cudf-cu12
     # via dagster
-    # via ukroutes
 rmm-cu12==24.6.0
     # via cudf-cu12
     # via cugraph-cu12
@@ -294,7 +316,7 @@ rmm-cu12==24.6.0
     # via ucxx-cu12
 scipy==1.14.0
     # via ukroutes
-setuptools==70.2.0
+setuptools==70.3.0
     # via dagster
 shapely==2.0.4
     # via geopandas
@@ -330,6 +352,7 @@ tornado==6.4.1
     # via distributed
 tqdm==4.66.4
     # via dagster
+    # via ukroutes
 typing-extensions==4.12.2
     # via alembic
     # via anyio
@@ -347,7 +370,7 @@ ucx-py-cu12==0.38.0
     # via raft-dask-cu12
 ucxx-cu12==0.38.0
     # via distributed-ucxx-cu12
-ukroutes @ git+https://github.com/cjber/ukroutes@4c39291a13b0e986bc3d1850afc6fa734e77f545
+ukroutes @ git+https://github.com/cjber/ukroutes@866b57d01779af83843dc5b1c2dcdf61cdd8f82a
     # via access-to-everything
 universal-pathlib==0.2.2
     # via dagster
