@@ -1,19 +1,15 @@
 import cudf
 import pandas as pd
-from dagster import asset
+from dagster import AssetOut, asset, multi_asset
 from ukroutes import Routing
 from ukroutes.common.utils import Paths
 from ukroutes.process_routing import add_to_graph, add_topk
+from ukroutes.oproad.utils import process_oproad
 
 
-@asset
-def nodes():
-    return cudf.from_pandas(pd.read_parquet(Paths.OS_GRAPH / "nodes.parquet"))
-
-
-@asset
-def edges():
-    return cudf.from_pandas(pd.read_parquet(Paths.OS_GRAPH / "edges.parquet"))
+@multi_asset(outs={"nodes": AssetOut(), "edges": AssetOut()})
+def oproad():
+    return process_oproad()
 
 
 def _routing(df, name, outputs, nodes, edges):
