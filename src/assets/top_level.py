@@ -27,9 +27,20 @@ def health(hospitals, gpprac, dentists, pharmacies, overture):
 
 @asset
 def education(postcodes):
-    return (
+    scot = pl.from_pandas(
+        gpd.read_file(Paths.SCOT_EDUCATION)[
+            ["SchUID", "GridRefEas", "GridRefNor"]
+        ].rename(
+            columns={
+                "SchUID": "code",
+                "GridRefEas": "easting",
+                "GridRefNor": "northing",
+            }
+        )
+    )
+    eng = (
         pl.read_csv(
-            Paths.EDUCATION,
+            Paths.ENG_EDUCATION,
             encoding="latin1",
             truncate_ragged_lines=True,
             columns=["URN", "Postcode"],
@@ -40,6 +51,7 @@ def education(postcodes):
         .join(postcodes, on="postcode")
         .select(["code", "easting", "northing"])
     )
+    return pl.concat([scot, eng])
 
 
 @asset
