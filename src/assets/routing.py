@@ -1,10 +1,9 @@
 import cudf
-import pandas as pd
 from dagster import AssetOut, asset, multi_asset
 from ukroutes import Routing
 from ukroutes.common.utils import Paths
-from ukroutes.process_routing import add_to_graph, add_topk
 from ukroutes.oproad.utils import process_oproad
+from ukroutes.process_routing import add_to_graph, add_topk
 
 
 @multi_asset(outs={"nodes": AssetOut(), "edges": AssetOut()})
@@ -25,7 +24,6 @@ def _routing(df, name, outputs, nodes, edges):
     inputs = add_topk(inputs, outputs, 10)
 
     routing = Routing(
-        name=name,
         edges=edges_c,
         nodes=nodes_c,
         outputs=outputs,

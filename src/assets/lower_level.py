@@ -13,11 +13,17 @@ from src.common.utils import NHSEng, NHSScot, NHSWales, Paths
 @asset
 def postcodes():
     return (
-        pl.read_csv(Paths.POSTCODES, columns=["PCD", "OSEAST1M", "OSNRTH1M", "DOTERM"])
+        pl.read_csv(
+            Paths.POSTCODES, columns=["PCD", "OSEAST1M", "OSNRTH1M", "DOTERM", "CTRY"]
+        )
         .rename({"PCD": "postcode", "OSEAST1M": "easting", "OSNRTH1M": "northing"})
         .with_columns(pl.col("postcode").str.replace(" ", ""))
-        .filter(pl.col("DOTERM").is_null())
-        .drop(["DOTERM"])
+        .filter(
+            (pl.col("DOTERM").is_null())
+            & (pl.col("CTRY").is_in(["N92000002", "L93000001", "M83000003"]).not_())
+        )
+        .drop(["DOTERM", "CTRY"])
+        .drop_nulls()
     )
 
 
@@ -158,5 +164,8 @@ def overture():
             pl.col("coords").list[0].alias("easting"),
             pl.col("coords").list[1].alias("northing"),
         )
+        .with_columns(pl.col("high_category").str.strip_chars())
         .select(["id", "easting", "northing", "high_category"])
+        .unique()
+        .drop_nulls()
     )

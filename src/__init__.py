@@ -1,4 +1,4 @@
-from dagster import Definitions, load_assets_from_modules, AutoMaterializePolicy
+from dagster import Definitions, load_assets_from_modules
 
 from src.assets import lower_level, routing, top_level
 from src.jobs import (

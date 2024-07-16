@@ -44,15 +44,12 @@ def education(postcodes):
 
 @asset
 def sustenance(overture):
-    return overture.filter(pl.col("high_category") == "Sustenance and essentials")
+    return overture.filter(pl.col("high_category") == "Sustenance and Essentials")
 
 
 @asset
 def community(overture):
-    return overture.filter(
-        (pl.col("high_category") == "Community and Culture")
-        & (pl.col("low_category") != "landmark_and_historical_building")
-    )
+    return overture.filter(pl.col("high_category") == "Community and Culture")
 
 
 @asset
@@ -62,7 +59,7 @@ def services(overture):
 
 @asset
 def food(overture):
-    return overture.filter(pl.col("high_category") == "Food and drink")
+    return overture.filter(pl.col("high_category") == "Food and Drink")
 
 
 @asset

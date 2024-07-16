@@ -10,12 +10,11 @@ from src.assets.lower_level import (
 )
 from src.assets.routing import (
     community_distances,
-    edges,
     education_distances,
     food_distances,
     greenspace_distances,
     health_distances,
-    nodes,
+    oproad,
     retail_distances,
     services_distances,
     sustenance_distances,
@@ -35,16 +34,7 @@ from src.assets.top_level import (
 
 lower_level_assets_job = define_asset_job(
     "lower_level_assets_job",
-    selection=[
-        dentists,
-        gpprac,
-        hospitals,
-        overture,
-        pharmacies,
-        postcodes,
-        nodes,
-        edges,
-    ],
+    selection=[dentists, gpprac, hospitals, overture, pharmacies, postcodes, oproad],
 )
 community_job = define_asset_job(
     "community_job", selection=[community, community_distances]
