@@ -7,22 +7,20 @@ import polars as pl
 
 load_dotenv()
 
-low_categories = gpd.read_file("./data/poi_uk.gpkg", geometry=False)
-low_categories["main_category"] = low_categories["main_category"].str.strip('"')
-# low_categories["combined_category"] = (
-#     "Main Category: "
-#     + low_categories["main_category"]
-#     + "\n\nAlternative Categories: "
-#     + low_categories["alternate_category"]
-#     .str.split("|")
-#     .apply(lambda x: x[0] if x else None)
-# )
-low_categories["alternate_category_0"] = (
-    low_categories["alternate_category"]
+overture_categories = gpd.read_file("./data/poi_uk.gpkg", geometry=False)
+overture_categories["main_category"] = overture_categories["main_category"].str.strip(
+    '"'
+)
+overture_categories["alternate_category_0"] = (
+    overture_categories["alternate_category"]
     .str.split("|")
     .apply(lambda x: x[0] if x else None)
+    .fillna(overture_categories["main_category"])
 )
-low_categories = low_categories["alternate_category_0"].dropna().unique().tolist()
+overture_categories = (
+    overture_categories["alternate_category_0"].dropna().unique().tolist()
+)
+len(overture_categories)
 
 client = OpenAI()
 
@@ -39,23 +37,26 @@ high_categories = """
 "Other": Anything that doesn't fit into the above categories
 """
 
+
 out_categories = []
-for low in tqdm(low_categories):
+for low in tqdm(overture_categories):
     completion = client.chat.completions.create(
         model="gpt-4o",
         messages=[
             {
                 "role": "user",
                 "content": f"""
-                You are given the name of a point of interest (POI), a low level category name. You must classify this POI into a single high level category from the list below. For each category in the list you are given some examples. ONLY OUTPUT THE CATEGORY NAME WITH NO OTHER TEXT.
+                You are given a category name of a Point of Interest (POI). Based on this category, you must suggest single high level category from the list below. For each category in the list you are given some examples. ONLY OUTPUT THE CATEGORY NAMES WITH NO OTHER TEXT.
 
-                Low level Category:
+                Original Category:
 
                 {low}
 
-                High level Categories: 
+                High level categories: 
 
                 {high_categories}
+
+                ---
 
                 High level category:
                 """,
@@ -66,7 +67,6 @@ for low in tqdm(low_categories):
 
 
 out = [out for out in out_categories if None not in out]
-# Prepare data for the DataFrame
 low_category = []
 high_category = []
 
@@ -75,10 +75,10 @@ for entry in out:
         low_category.append(key)
         high_category.append(value)
 
-# Create the DataFrame
-df = pl.DataFrame({"low_category": low_category, "high_category": high_category})
-df.with_columns(pl.col("high_category").str.replace_all('"', "")).write_csv(
-    "./data/openai_category_mapping-alternate.csv"
+(
+    pl.DataFrame({"low_category": low_category, "high_category": high_category})
+    .with_columns(pl.col("high_category").str.replace_all('"', ""))
+    .write_csv("./data/openai_category_mapping-alternate.csv")
 )
 
 
@@ -92,4 +92,38 @@ overture = overture.merge(
 )
 
 overture.to_parquet("./data/raw/overture_poi_alternate.parquet", index=False)
-overture.sample(100).to_csv("./data/raw/overture_poi_alternate_sample.csv", index=False)
+
+new_categories_mapping = {
+    "Health and Lifestyle": ["...", "Other"],
+    "Sustenance and Essentials": ["...", "Other"],
+    "Community and Culture": ["...", "Other"],
+    "Services": ["...", "Other"],
+    "Food and Drink": ["...", "Other"],
+    "Retail": ["...", "Other"],
+}
+out_categories = []
+for low in tqdm(overture_categories):
+    completion = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            {
+                "role": "user",
+                "content": f"""
+                You are given a category name of a Point of Interest (POI). Based on this category, you must suggest a new category from the list below. ONLY OUTPUT THE CATEGORY NAMES WITH NO OTHER TEXT.
+
+                Original Category:
+
+                {low}
+
+                New Categories: 
+
+                {new_categories}
+
+                ---
+
+                New Category:
+                """,
+            },
+        ],
+    )
+    out_categories.append({low: completion.choices[0].message.content})
