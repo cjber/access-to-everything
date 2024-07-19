@@ -34,11 +34,5 @@ class NHSWales:
 class Paths:
     DATA = Path("data")
     RAW = DATA / "raw"
+    PROCESSED = DATA / "processed"
     OUT = DATA / "out"
-    POSTCODES = RAW / "ONSPD_FEB_2024.csv"
-
-    GREENSPACE = RAW / "opgrsp_gb.gpkg"
-    ENG_EDUCATION = RAW / "schools.csv"
-    SCOT_EDUCATION = RAW / "SG_SchoolRoll_2023" / "SG_SchoolRoll_2023.shp"
-    OVERTURE = RAW / "overture_poi_alternate.parquet"
-    TRANSPORT = RAW / "Stops.csv"
