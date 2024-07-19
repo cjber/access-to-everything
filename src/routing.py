@@ -53,6 +53,8 @@ def main():
     for poi in tqdm(poi_list):
         df = cudf.from_pandas(pd.read_parquet(poi))
         name = poi.stem
+        if (Paths.OUT_DATA / f"distances_{name}.csv").exists():
+            continue
         _routing(df, name, postcodes, nodes, edges)
 
 

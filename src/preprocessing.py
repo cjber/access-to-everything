@@ -124,6 +124,7 @@ def process_gppracs(postcodes):
     scot = pl.read_csv(scot_csv_path)
     (
         pl.concat([eng, scot])
+        .with_columns(pl.col("postcode").str.replace(" ", ""))
         .join(postcodes, on="postcode")
         .select(["code", "easting", "northing"])
         .write_parquet(Paths.PROCESSED / "gppracs.parquet")
