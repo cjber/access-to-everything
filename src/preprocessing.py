@@ -2,6 +2,7 @@ import json
 import logging
 import urllib.request
 from io import BytesIO
+from pathlib import Path
 from zipfile import ZipFile
 
 import geopandas as gpd
@@ -10,7 +11,7 @@ from pyproj import Transformer
 from rich.logging import RichHandler
 from ukroutes.oproad.utils import process_oproad
 
-from src.common.utils import NHSEng, NHSScot, NHSWales, Paths
+from src.common.utils import Config, Paths
 
 FORMAT = "%(message)s"
 logging.basicConfig(
@@ -20,15 +21,15 @@ logging.basicConfig(
 logger = logging.getLogger("rich")
 
 
-def _read_zip_from_url(file_url: str, filename: str) -> BytesIO:
-    r = urllib.request.urlopen(file_url).read()
+def _read_zip_from_url(filename: str) -> BytesIO:
+    filename = Config.NHS_ENG_URL + filename
+    r = urllib.request.urlopen(filename).read()
     file = ZipFile(BytesIO(r))
-    return file.open(filename)
+    return file.open(Path(filename).stem + ".csv")
 
 
 def _fetch_scot_records(resource_id: int, limit: int = 100) -> pl.DataFrame:
-    base_url = "https://www.opendata.nhs.scot/api/3/action/datastore_search"
-    initial_url = f"{base_url}?resource_id={resource_id}&limit={limit}"
+    initial_url = f"{Config.NHS_SCOT_URL}?resource_id={resource_id}&limit={limit}"
     response = urllib.request.urlopen(initial_url)
     data = response.read().decode()
     data_dict = json.loads(data)
@@ -37,9 +38,7 @@ def _fetch_scot_records(resource_id: int, limit: int = 100) -> pl.DataFrame:
 
     offset = limit
     while offset < total_records:
-        paginated_url = (
-            f"{base_url}?resource_id={resource_id}&limit={limit}&offset={offset}"
-        )
+        paginated_url = f"{Config.NHS_SCOT_URL}?resource_id={resource_id}&limit={limit}&offset={offset}"
         response = urllib.request.urlopen(paginated_url)
         data = response.read().decode()
         data_dict = json.loads(data)
@@ -49,9 +48,10 @@ def _fetch_scot_records(resource_id: int, limit: int = 100) -> pl.DataFrame:
 
 
 def process_postcodes():
+    logger.info("Processing postcodes...")
     (
         pl.read_csv(
-            Paths.RAW / "ONSPD_FEB_2024.csv",
+            Paths.RAW / "onspd" / "ONSPD_FEB_2024.csv",
             columns=["PCD", "OSEAST1M", "OSNRTH1M", "DOTERM", "CTRY"],
         )
         .rename({"PCD": "postcode", "OSEAST1M": "easting", "OSNRTH1M": "northing"})
@@ -67,9 +67,10 @@ def process_postcodes():
 
 
 def process_hospitals(postcodes):
-    eng_csv_path = Paths.RAW / "hospitals_england.csv"
+    logger.info("Processing hospitals...")
+    eng_csv_path = Paths.RAW / "nhs" / "hospitals_england.csv"
     if not eng_csv_path.exists():
-        eng_csv = _read_zip_from_url(*NHSEng.HOSPITALS_URL)
+        eng_csv = _read_zip_from_url(Config.NHS_ENG_FILES["hospitals"])
         (
             pl.read_csv(eng_csv, has_header=False)
             .select(["column_1", "column_10", "column_12"])
@@ -80,10 +81,10 @@ def process_hospitals(postcodes):
         )
     eng = pl.read_csv(eng_csv_path)
 
-    scot_csv_path = Paths.RAW / "hospitals_scotland.csv"
+    scot_csv_path = Paths.RAW / "nhs" / "hospitals_scotland.csv"
     if not scot_csv_path.exists():
         (
-            _fetch_scot_records(NHSScot.HOSPITAL_ID)
+            _fetch_scot_records(Config.NHS_SCOT_FILES["hospitals"])
             .select(["HospitalCode", "Postcode"])
             .rename({"HospitalCode": "code", "Postcode": "postcode"})
             .write_csv(scot_csv_path)
@@ -99,9 +100,10 @@ def process_hospitals(postcodes):
 
 
 def process_gppracs(postcodes):
-    eng_csv_path = Paths.RAW / "gppracs_england.csv"
+    logger.info("Processing GP practices...")
+    eng_csv_path = Paths.RAW / "nhs" / "gppracs_england.csv"
     if not eng_csv_path.exists():
-        eng_csv = _read_zip_from_url(*NHSEng.GP_URL)
+        eng_csv = _read_zip_from_url(Config.NHS_ENG_FILES["gppracs"])
         (
             pl.read_csv(eng_csv, has_header=False)
             .select(["column_1", "column_10", "column_12"])
@@ -112,13 +114,13 @@ def process_gppracs(postcodes):
         )
     eng = pl.read_csv(eng_csv_path)
 
-    scot_csv_path = Paths.RAW / "gppracs_england.csv"
+    scot_csv_path = Paths.RAW / "nhs" / "gppracs_scotland.csv"
     if not scot_csv_path.exists():
         (
-            _fetch_scot_records(NHSScot.GP_ID)
+            _fetch_scot_records(Config.NHS_SCOT_FILES["gppracs"])
             .select(["PracticeCode", "Postcode"])
             .rename({"PracticeCode": "code", "Postcode": "postcode"})
-            .with_columns(pl.col("code").cast(pl.String))
+            .with_columns(("c" + pl.col("code").cast(pl.String)).alias("code"))
             .write_csv(scot_csv_path)
         )
     scot = pl.read_csv(scot_csv_path)
@@ -132,9 +134,10 @@ def process_gppracs(postcodes):
 
 
 def process_dentists(postcodes):
-    eng_csv_path = Paths.RAW / "dentists_england.csv"
+    logger.info("Processing dentists...")
+    eng_csv_path = Paths.RAW / "nhs" / "dentists_england.csv"
     if not eng_csv_path.exists():
-        eng_csv = _read_zip_from_url(*NHSEng.DENTISTS_URL)
+        eng_csv = _read_zip_from_url(Config.NHS_ENG_FILES["dentists"])
         (
             pl.read_csv(eng_csv, has_header=False)
             .select(["column_1", "column_10", "column_12"])
@@ -145,10 +148,10 @@ def process_dentists(postcodes):
         )
     eng = pl.read_csv(eng_csv_path)
 
-    scot_csv_path = Paths.RAW / "dentists_scotland.csv"
+    scot_csv_path = Paths.RAW / "nhs" / "dentists_scotland.csv"
     if not scot_csv_path.exists():
         (
-            _fetch_scot_records(NHSScot.DENTISTS_ID)
+            _fetch_scot_records(Config.NHS_SCOT_FILES["dentists"])
             .select(["Dental_Practice_Code", "pc7"])
             .rename({"Dental_Practice_Code": "code", "pc7": "postcode"})
             .with_columns(("c" + pl.col("code").cast(pl.String)).alias("code"))
@@ -165,12 +168,13 @@ def process_dentists(postcodes):
 
 
 def process_pharmacies(postcodes):
-    eng_csv_path = Paths.RAW / "pharmacies_england.csv"
+    logger.info("Processing pharmacies...")
+    eng_csv_path = Paths.RAW / "nhs" / "pharmacies_england.csv"
     if not eng_csv_path.exists():
-        eng_csv = _read_zip_from_url(*NHSEng.PHARMACIES_URL)
+        eng_csv = _read_zip_from_url(Config.NHS_ENG_FILES["pharmacies"])
         eng = (
             pl.read_csv(eng_csv, has_header=False)
-            .select(["column_1", "column_10"])
+            .select(["column_1", "column_10", "column_12"])
             .rename({"column_1": "code", "column_10": "postcode", "column_12": "close"})
             .filter(pl.col("close") != "")
             .drop("close")
@@ -178,10 +182,10 @@ def process_pharmacies(postcodes):
         )
     eng = pl.read_csv(eng_csv_path)
 
-    scot_csv_path = Paths.RAW / "pharmacies_scotland.csv"
+    scot_csv_path = Paths.RAW / "nhs" / "pharmacies_scotland.csv"
     if not scot_csv_path.exists():
         (
-            pl.read_csv(NHSScot.PHARMACIES_CSV)
+            pl.read_csv(Config.NHS_SCOT_FILES["pharmacies"])
             .select(["DispCode", "DispLocationPostcode"])
             .rename({"DispCode": "code", "DispLocationPostcode": "postcode"})
             .with_columns(("c" + pl.col("code").cast(pl.String)).alias("code"))
@@ -189,10 +193,10 @@ def process_pharmacies(postcodes):
         )
     scot = pl.read_csv(scot_csv_path)
 
-    wales_csv_path = Paths.RAW / "pharmacies_wales.csv"
+    wales_csv_path = Paths.RAW / "nhs" / "pharmacies_wales.csv"
     if not wales_csv_path.exists():
         (
-            pl.read_excel(NHSWales.PHARMACIES_EXCEL)
+            pl.read_excel(Config.NHS_WALES_URL + Config.NHS_WALES_FILES["pharmacies"])
             .select(["Account Number", "Post Code"])
             .rename({"Account Number": "code", "Post Code": "postcode"})
             .write_csv(wales_csv_path)
@@ -209,7 +213,10 @@ def process_pharmacies(postcodes):
 
 
 def process_greenspace():
-    gs = gpd.read_file(Paths.RAW / "opgrsp_gb.gpkg", layer="access_point")
+    logger.info("Processing greenspace...")
+    gs = gpd.read_file(
+        Paths.RAW / "greenspace" / "opgrsp_gb.gpkg", layer="access_point"
+    )
     gs["easting"], gs["northing"] = gs.geometry.x, gs.geometry.y
     pl.from_pandas(gs[["id", "easting", "northing"]]).write_parquet(
         Paths.PROCESSED / "greenspace.parquet"
@@ -217,10 +224,11 @@ def process_greenspace():
 
 
 def process_education(postcodes, typ="Primary"):
+    logger.info(f"Processing {typ} schools...")
     scot = pl.from_pandas(
-        gpd.read_file(Paths.RAW / "SG_SchoolRoll_2023/SG_SchoolRoll_2023.shp")[
-            ["SchUID", "SchoolType", "GridRefEas", "GridRefNor"]
-        ].rename(
+        gpd.read_file(
+            Paths.RAW / "education" / "SG_SchoolRoll_2023/SG_SchoolRoll_2023.shp"
+        )[["SchUID", "SchoolType", "GridRefEas", "GridRefNor"]].rename(
             columns={
                 "SchUID": "code",
                 "SchoolType": "type",
@@ -234,7 +242,7 @@ def process_education(postcodes, typ="Primary"):
     )
     eng = (
         pl.read_csv(
-            Paths.RAW / "schools.csv",
+            Paths.RAW / "education" / "schools.csv",
             encoding="latin1",
             truncate_ragged_lines=True,
             columns=["URN", "Postcode", "PhaseOfEducation (name)"],
@@ -254,7 +262,7 @@ def process_education(postcodes, typ="Primary"):
 
     wales = (
         pl.read_csv(
-            Paths.RAW / f"state_{typ.lower()}_schools_wales.csv",
+            Paths.RAW / "education" / f"state_{typ.lower()}_schools_wales.csv",
             columns=["FID", "easting", "northing"],
         )
         .with_columns(
@@ -276,8 +284,9 @@ def process_education(postcodes, typ="Primary"):
 
 
 def process_busstops():
+    logger.info("Processing bus stops...")
     pl.read_csv(
-        Paths.RAW / "Stops.csv",
+        Paths.RAW / "transport" / "Stops.csv",
         infer_schema_length=100_000,
         columns=["ATCOCode", "Easting", "Northing"],
     ).rename(
@@ -286,10 +295,11 @@ def process_busstops():
 
 
 def process_evpoints():
+    logger.info("Processing EV points...")
     transformer = Transformer.from_crs("epsg:4326", "epsg:27700")
     (
         pl.read_csv(
-            Paths.RAW / "national-charge-point-registry.csv",
+            Paths.RAW / "transport" / "national-charge-point-registry.csv",
             columns=["chargeDeviceID", "latitude", "longitude"],
         )
         .with_columns(
@@ -305,14 +315,19 @@ def process_evpoints():
             pl.col("coords").list[1].alias("northing"),
         )
         .select(["chargeDeviceID", "easting", "northing"])
+        .drop_nulls(["easting", "northing"])
         .write_parquet(Paths.PROCESSED / "evpoints.parquet")
     )
 
 
 def process_trainstations():
+    logger.info("Processing train stations...")
     transformer = Transformer.from_crs("epsg:4326", "epsg:27700")
     (
-        pl.read_csv(Paths.RAW / "stations.csv", columns=["stationName", "lat", "long"])
+        pl.read_csv(
+            Paths.RAW / "transport" / "stations.csv",
+            columns=["stationName", "lat", "long"],
+        )
         .with_columns(
             pl.struct(pl.col("lat"), pl.col("long"))
             .map_elements(
@@ -349,66 +364,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-# def process_health(hospitals, gpprac, dentists, pharmacies, overture):
-#     overture_health = (
-#         overture.filter(pl.col("high_category") == "Health and Lifestyle")
-#         .drop("high_category")
-#         .rename({"id": "code"})
-#         .with_columns(
-#             pl.col("easting").cast(pl.Int64), pl.col("northing").cast(pl.Int64)
-#         )
-#     )
-#     return pl.concat([hospitals, gpprac, dentists, pharmacies, overture_health])
-
-# def sustenance(overture):
-#     return overture.filter(pl.col("high_category") == "Sustenance and Essentials")
-#
-#
-# def community(overture):
-#     return overture.filter(pl.col("high_category") == "Community and Culture")
-#
-#
-# def services(overture):
-#     return overture.filter(pl.col("high_category") == "Services")
-#
-#
-# def food(overture):
-#     return overture.filter(pl.col("high_category") == "Food and Drink")
-#
-#
-# def retail(overture):
-#     return overture.filter(pl.col("high_category") == "Retail")
-
-# def process_overture():
-#     transformer = Transformer.from_crs("epsg:4326", "epsg:27700")
-#     overture = (
-#         pl.read_parquet(
-#             Paths.OVERTURE,
-#             columns=["id", "lat", "long", "high_category", "low_category"],
-#         )
-#         .with_columns(
-#             pl.struct(pl.col("lat"), pl.col("long"))
-#             .map_elements(
-#                 lambda row: transformer.transform(row["long"], row["lat"]),
-#                 return_dtype=pl.List(pl.Float64),
-#             )
-#             .alias("coords")
-#         )
-#         .with_columns(
-#             pl.col("coords").list[0].alias("easting"),
-#             pl.col("coords").list[1].alias("northing"),
-#         )
-#         .with_columns(pl.col("high_category").str.strip_chars())
-#         .select(["id", "easting", "northing", "high_category", "low_category"])
-#         .unique()
-#         .drop_nulls()
-#     )
-#     (
-#         overture.group_by(["high_category", "low_category"])
-#         .len()
-#         .sort("len", descending=True)
-#         .group_by("high_category")
-#         .head(25)
-#         .write_csv("./data/example_cats.csv")
-#     )
-#
