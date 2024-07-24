@@ -1,9 +1,9 @@
 import geopandas as gpd
+import pandas as pd
+import polars as pl
 from dotenv import load_dotenv
 from openai import OpenAI
 from tqdm import tqdm
-import pandas as pd
-import polars as pl
 
 load_dotenv()
 

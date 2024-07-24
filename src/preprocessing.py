@@ -21,14 +21,14 @@ logging.basicConfig(
 logger = logging.getLogger("rich")
 
 
-def _read_zip_from_url(filename: str) -> BytesIO:
+def _read_zip_from_url(filename: str):
     filename = Config.NHS_ENG_URL + filename
     r = urllib.request.urlopen(filename).read()
     file = ZipFile(BytesIO(r))
-    return file.open(Path(filename).stem + ".csv")
+    return file.open(f"{Path(filename).stem}.csv")
 
 
-def _fetch_scot_records(resource_id: int, limit: int = 100) -> pl.DataFrame:
+def _fetch_scot_records(resource_id: str, limit: int = 100) -> pl.DataFrame:
     initial_url = f"{Config.NHS_SCOT_URL}?resource_id={resource_id}&limit={limit}"
     response = urllib.request.urlopen(initial_url)
     data = response.read().decode()
@@ -291,7 +291,9 @@ def process_busstops():
         columns=["ATCOCode", "Easting", "Northing"],
     ).rename(
         {"ATCOCode": "code", "Easting": "easting", "Northing": "northing"}
-    ).write_parquet(Paths.PROCESSED / "busstops.parquet")
+    ).write_parquet(
+        Paths.PROCESSED / "busstops.parquet"
+    )
 
 
 def process_evpoints():
