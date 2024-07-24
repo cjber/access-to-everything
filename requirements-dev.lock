@@ -13,48 +13,26 @@ aiohttp==3.9.5
     # via fsspec
 aiosignal==1.3.1
     # via aiohttp
-alembic==1.13.2
-    # via dagster
-aniso8601==9.0.1
-    # via graphene
-annotated-types==0.7.0
-    # via pydantic
-anyio==4.4.0
-    # via gql
-    # via starlette
-    # via watchfiles
 asttokens==2.4.1
     # via stack-data
 async-timeout==4.0.3
     # via aiohttp
 attrs==23.2.0
     # via aiohttp
-backoff==2.2.1
-    # via gql
-cachetools==5.3.3
+cachetools==5.4.0
     # via cudf-cu12
 certifi==2024.7.4
     # via pyogrio
     # via pyproj
-    # via requests
-charset-normalizer==3.3.2
-    # via requests
 click==8.1.7
-    # via dagster
-    # via dagster-webserver
     # via dask
     # via dask-cuda
     # via distributed
-    # via uvicorn
 cloudpickle==3.0.0
     # via dask
     # via distributed
-coloredlogs==14.0
-    # via dagster
 contourpy==1.2.1
     # via matplotlib
-croniter==2.0.5
-    # via dagster
 cuda-python==12.5.0
     # via cudf-cu12
     # via pylibraft-cu12
@@ -71,19 +49,6 @@ cupy-cuda12x==13.2.0
     # via dask-cudf-cu12
 cycler==0.12.1
     # via matplotlib
-dagster==1.7.13
-    # via access-to-everything
-    # via dagster-graphql
-    # via dagster-postgres
-    # via dagster-webserver
-dagster-graphql==1.7.13
-    # via dagster-webserver
-dagster-pipes==1.7.13
-    # via dagster
-dagster-postgres==0.23.13
-    # via access-to-everything
-dagster-webserver==1.7.13
-    # via access-to-everything
 dask==2024.5.1
     # via dask-expr
     # via distributed
@@ -102,10 +67,7 @@ distributed==2024.5.1
     # via rapids-dask-dependency
 distributed-ucxx-cu12==0.38.0
     # via raft-dask-cu12
-docstring-parser==0.16
-    # via dagster
-exceptiongroup==1.2.1
-    # via anyio
+exceptiongroup==1.2.2
     # via ipython
 executing==2.0.1
     # via stack-data
@@ -113,8 +75,6 @@ fastexcel==0.10.4
     # via access-to-everything
 fastrlock==0.8.2
     # via cupy-cuda12x
-filelock==3.15.4
-    # via dagster
 fonttools==4.53.1
     # via matplotlib
 frozenlist==1.4.1
@@ -125,35 +85,9 @@ fsspec==2024.6.1
     # via cugraph-cu12
     # via dask
     # via dask-cudf-cu12
-    # via universal-pathlib
 geopandas==1.0.1
     # via ukroutes
-gql==3.5.0
-    # via dagster-graphql
-graphene==3.3
-    # via dagster-graphql
-graphql-core==3.2.3
-    # via gql
-    # via graphene
-    # via graphql-relay
-graphql-relay==3.2.0
-    # via graphene
-greenlet==3.0.3
-    # via sqlalchemy
-grpcio==1.64.1
-    # via dagster
-    # via grpcio-health-checking
-grpcio-health-checking==1.62.2
-    # via dagster
-h11==0.14.0
-    # via uvicorn
-httptools==0.6.1
-    # via uvicorn
-humanfriendly==10.0
-    # via coloredlogs
 idna==3.7
-    # via anyio
-    # via requests
     # via yarl
 importlib-metadata==8.0.0
     # via dask
@@ -163,7 +97,6 @@ ipython==8.26.0
 jedi==0.19.1
     # via ipython
 jinja2==3.1.4
-    # via dagster
     # via distributed
 joblib==1.4.2
     # via raft-dask-cu12
@@ -177,13 +110,10 @@ llvmlite==0.43.0
 locket==1.0.0
     # via distributed
     # via partd
-mako==1.3.5
-    # via alembic
 markdown-it-py==3.0.0
     # via rich
 markupsafe==2.1.5
     # via jinja2
-    # via mako
 matplotlib==3.9.1
     # via access-to-everything
 matplotlib-inline==0.1.7
@@ -226,7 +156,6 @@ nvtx==0.2.10
     # via cudf-cu12
 packaging==24.1
     # via cudf-cu12
-    # via dagster
     # via dask
     # via distributed
     # via geopandas
@@ -242,23 +171,16 @@ parso==0.8.4
     # via jedi
 partd==1.4.2
     # via dask
-pendulum==3.0.0
-    # via dagster
 pexpect==4.9.0
     # via ipython
 pillow==10.4.0
     # via matplotlib
-polars==1.1.0
+polars==1.2.0
     # via ukroutes
 prompt-toolkit==3.0.47
     # via ipython
-protobuf==4.25.3
-    # via dagster
-    # via grpcio-health-checking
 psutil==6.0.0
     # via distributed
-psycopg2-binary==2.9.9
-    # via dagster-postgres
 ptyprocess==0.7.0
     # via pexpect
 pure-eval==0.2.2
@@ -267,10 +189,6 @@ pyarrow==16.1.0
     # via cudf-cu12
     # via dask-expr
     # via fastexcel
-pydantic==2.8.2
-    # via dagster
-pydantic-core==2.20.1
-    # via pydantic
 pygments==2.18.0
     # via ipython
     # via rich
@@ -296,26 +214,16 @@ pyqt6==6.7.0
     # via access-to-everything
 pyqt6-qt6==6.7.2
     # via pyqt6
-pyqt6-sip==13.6.0
+pyqt6-sip==13.8.0
     # via pyqt6
 python-dateutil==2.9.0.post0
-    # via croniter
     # via matplotlib
     # via pandas
-    # via pendulum
-    # via time-machine
-python-dotenv==1.0.1
-    # via dagster
-    # via uvicorn
 pytz==2024.1
-    # via croniter
-    # via dagster
     # via pandas
 pyyaml==6.0.1
-    # via dagster
     # via dask
     # via distributed
-    # via uvicorn
 raft-dask-cu12==24.6.0
     # via cugraph-cu12
 rapids-dask-dependency==24.6.0
@@ -324,16 +232,8 @@ rapids-dask-dependency==24.6.0
     # via dask-cudf-cu12
     # via distributed-ucxx-cu12
     # via raft-dask-cu12
-requests==2.32.3
-    # via dagster
-    # via dagster-graphql
-    # via gql
-    # via requests-toolbelt
-requests-toolbelt==1.0.0
-    # via gql
 rich==13.7.1
     # via cudf-cu12
-    # via dagster
 rmm-cu12==24.6.0
     # via cudf-cu12
     # via cugraph-cu12
@@ -342,63 +242,35 @@ rmm-cu12==24.6.0
     # via ucxx-cu12
 scipy==1.14.0
     # via ukroutes
-setuptools==70.3.0
-    # via dagster
-shapely==2.0.4
+shapely==2.0.5
     # via geopandas
 six==1.16.0
     # via asttokens
     # via python-dateutil
-sniffio==1.3.1
-    # via anyio
 sortedcontainers==2.4.0
     # via distributed
-sqlalchemy==2.0.31
-    # via alembic
-    # via dagster
 stack-data==0.6.3
     # via ipython
-starlette==0.37.2
-    # via dagster-graphql
-    # via dagster-webserver
-structlog==24.2.0
-    # via dagster
-tabulate==0.9.0
-    # via dagster
 tblib==3.0.0
     # via distributed
-time-machine==2.14.2
-    # via pendulum
 tomli==2.0.1
-    # via dagster
     # via ipdb
 toolz==0.12.1
     # via dask
     # via distributed
     # via partd
-toposort==1.10
-    # via dagster
 tornado==6.4.1
     # via distributed
 tqdm==4.66.4
-    # via dagster
     # via ukroutes
 traitlets==5.14.3
     # via ipython
     # via matplotlib-inline
 typing-extensions==4.12.2
-    # via alembic
-    # via anyio
     # via cudf-cu12
-    # via dagster
     # via ipython
-    # via pydantic
-    # via pydantic-core
-    # via sqlalchemy
-    # via uvicorn
 tzdata==2024.1
     # via pandas
-    # via pendulum
 ucx-py-cu12==0.38.0
     # via cugraph-cu12
     # via raft-dask-cu12
@@ -406,26 +278,12 @@ ucxx-cu12==0.38.0
     # via distributed-ucxx-cu12
 ukroutes @ git+https://github.com/cjber/ukroutes@866b57d01779af83843dc5b1c2dcdf61cdd8f82a
     # via access-to-everything
-universal-pathlib==0.2.2
-    # via dagster
 urllib3==2.2.2
     # via distributed
-    # via requests
-uvicorn==0.30.1
-    # via dagster-webserver
-uvloop==0.19.0
-    # via uvicorn
-watchdog==4.0.1
-    # via dagster
-watchfiles==0.22.0
-    # via uvicorn
 wcwidth==0.2.13
     # via prompt-toolkit
-websockets==12.0
-    # via uvicorn
 yarl==1.9.4
     # via aiohttp
-    # via gql
 zict==3.0.0
     # via dask-cuda
     # via distributed

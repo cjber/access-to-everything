@@ -7,12 +7,8 @@ authors = [
 ]
 dependencies = [
     "ukroutes @ git+https://github.com/cjber/ukroutes",
-    "dagster-webserver>=1.7.12",
-    "dagster>=1.7.12",
-    "dagster-postgres>=0.23.12",
     "fastexcel>=0.10.4",
-    "matplotlib>=3.9.1",
-    "pyqt6>=6.7.0",
+    "h3pandas>=0.2.6",
 ]
 readme = "README.md"
 requires-python = ">= 3.10"
@@ -26,6 +22,8 @@ managed = true
 dev-dependencies = [
     "ipython>=8.25.0",
     "ipdb>=0.13.13",
+    "matplotlib>=3.9.1",
+    "pyqt6>=6.7.0",
 ]
 
 [tool.hatch.metadata]
