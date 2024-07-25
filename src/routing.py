@@ -35,7 +35,7 @@ def _routing(df, name, outputs, nodes, edges):
         .reset_index()
     )
     OUT_FILE = Paths.OUT_DATA / f"distances_{name}.parquet"
-    distances.to_pandas().to_csv(OUT_FILE, index=False)
+    distances.to_pandas().to_parquet(OUT_FILE, index=False)
 
 
 def main():

@@ -6,9 +6,11 @@ from pathlib import Path
 from zipfile import ZipFile
 
 import geopandas as gpd
+import pandas as pd
 import polars as pl
 from pyproj import Transformer
 from rich.logging import RichHandler
+from shapely import MultiPolygon, Polygon
 from ukroutes.oproad.utils import process_oproad
 
 from src.common.utils import Config, Paths
@@ -347,6 +349,26 @@ def process_trainstations():
     )
 
 
+def process_bluespace():
+    bluespace = gpd.read_parquet(Paths.RAW / "osm" / "gb-water.parquet")
+    coast = (
+        gpd.read_parquet(Paths.RAW / "osm" / "gb-coast.parquet")
+        .to_crs(27700)
+        .get_coordinates()
+        .round(-3)
+    )
+    bs = bluespace[
+        (bluespace.geometry.apply(lambda x: isinstance(x, (MultiPolygon, Polygon))))
+    ].to_crs(27700)
+    bs = bs[bs.area > 10_000].get_coordinates().round(-3)
+    bs = (
+        pd.concat([coast, bs])
+        .drop_duplicates()
+        .rename(columns={"x": "easting", "y": "northing"})
+    )
+    bs.to_parquet(Paths.PROCESSED / "bluespace.parquet", index=False)
+
+
 def main():
     process_postcodes()
     postcodes = pl.read_parquet(Paths.PROCESSED / "onspd" / "postcodes.parquet")
@@ -361,6 +383,8 @@ def main():
     process_busstops()
     process_evpoints()
     process_trainstations()
+    process_bluespace()
+
     _ = process_oproad(outdir=Paths.PROCESSED / "oproad")
 
 
