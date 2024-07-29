@@ -7,12 +7,18 @@
 #   all-features: false
 #   with-sources: false
 #   generate-hashes: false
+#   universal: false
 
 -e file:.
 aiohttp==3.9.5
     # via fsspec
 aiosignal==1.3.1
     # via aiohttp
+annotated-types==0.7.0
+    # via pydantic
+anyio==4.4.0
+    # via httpx
+    # via openai
 asttokens==2.4.1
     # via stack-data
 async-timeout==4.0.3
@@ -22,6 +28,8 @@ attrs==23.2.0
 cachetools==5.4.0
     # via cudf-cu12
 certifi==2024.7.4
+    # via httpcore
+    # via httpx
     # via pyogrio
     # via pyproj
 click==8.1.7
@@ -67,11 +75,14 @@ distributed==2024.5.1
     # via rapids-dask-dependency
 distributed-ucxx-cu12==0.38.0
     # via raft-dask-cu12
+distro==1.9.0
+    # via openai
 exceptiongroup==1.2.2
+    # via anyio
     # via ipython
 executing==2.0.1
     # via stack-data
-fastexcel==0.10.4
+fastexcel==0.11.5
     # via access-to-everything
 fastrlock==0.8.2
     # via cupy-cuda12x
@@ -86,10 +97,23 @@ fsspec==2024.6.1
     # via dask
     # via dask-cudf-cu12
 geopandas==1.0.1
+    # via h3pandas
     # via ukroutes
+h11==0.14.0
+    # via httpcore
+h3==3.7.7
+    # via h3pandas
+h3pandas==0.2.6
+    # via access-to-everything
+httpcore==1.0.5
+    # via httpx
+httpx==0.27.0
+    # via openai
 idna==3.7
+    # via anyio
+    # via httpx
     # via yarl
-importlib-metadata==8.0.0
+importlib-metadata==8.1.0
     # via dask
 ipdb==0.13.13
 ipython==8.26.0
@@ -115,7 +139,6 @@ markdown-it-py==3.0.0
 markupsafe==2.1.5
     # via jinja2
 matplotlib==3.9.1
-    # via access-to-everything
 matplotlib-inline==0.1.7
     # via ipython
 mdurl==0.1.2
@@ -140,6 +163,7 @@ numpy==1.26.4
     # via dask-cuda
     # via dask-cudf-cu12
     # via geopandas
+    # via h3pandas
     # via matplotlib
     # via numba
     # via pandas
@@ -154,6 +178,8 @@ numpy==1.26.4
     # via ucxx-cu12
 nvtx==0.2.10
     # via cudf-cu12
+openai==1.37.1
+    # via access-to-everything
 packaging==24.1
     # via cudf-cu12
     # via dask
@@ -167,6 +193,7 @@ pandas==2.2.2
     # via dask-cudf-cu12
     # via dask-expr
     # via geopandas
+    # via h3pandas
 parso==0.8.4
     # via jedi
 partd==1.4.2
@@ -175,7 +202,7 @@ pexpect==4.9.0
     # via ipython
 pillow==10.4.0
     # via matplotlib
-polars==1.2.0
+polars==1.2.1
     # via ukroutes
 prompt-toolkit==3.0.47
     # via ipython
@@ -183,12 +210,16 @@ psutil==6.0.0
     # via distributed
 ptyprocess==0.7.0
     # via pexpect
-pure-eval==0.2.2
+pure-eval==0.2.3
     # via stack-data
 pyarrow==16.1.0
     # via cudf-cu12
     # via dask-expr
     # via fastexcel
+pydantic==2.8.2
+    # via openai
+pydantic-core==2.20.1
+    # via pydantic
 pygments==2.18.0
     # via ipython
     # via rich
@@ -210,8 +241,7 @@ pyparsing==3.1.2
     # via matplotlib
 pyproj==3.6.1
     # via geopandas
-pyqt6==6.7.0
-    # via access-to-everything
+pyqt6==6.7.1
 pyqt6-qt6==6.7.2
     # via pyqt6
 pyqt6-sip==13.8.0
@@ -219,6 +249,8 @@ pyqt6-sip==13.8.0
 python-dateutil==2.9.0.post0
     # via matplotlib
     # via pandas
+python-dotenv==1.0.1
+    # via access-to-everything
 pytz==2024.1
     # via pandas
 pyyaml==6.0.1
@@ -244,9 +276,14 @@ scipy==1.14.0
     # via ukroutes
 shapely==2.0.5
     # via geopandas
+    # via h3pandas
 six==1.16.0
     # via asttokens
     # via python-dateutil
+sniffio==1.3.1
+    # via anyio
+    # via httpx
+    # via openai
 sortedcontainers==2.4.0
     # via distributed
 stack-data==0.6.3
@@ -262,13 +299,19 @@ toolz==0.12.1
 tornado==6.4.1
     # via distributed
 tqdm==4.66.4
+    # via openai
     # via ukroutes
 traitlets==5.14.3
     # via ipython
     # via matplotlib-inline
 typing-extensions==4.12.2
+    # via anyio
     # via cudf-cu12
+    # via h3pandas
     # via ipython
+    # via openai
+    # via pydantic
+    # via pydantic-core
 tzdata==2024.1
     # via pandas
 ucx-py-cu12==0.38.0
@@ -276,7 +319,7 @@ ucx-py-cu12==0.38.0
     # via raft-dask-cu12
 ucxx-cu12==0.38.0
     # via distributed-ucxx-cu12
-ukroutes @ git+https://github.com/cjber/ukroutes@866b57d01779af83843dc5b1c2dcdf61cdd8f82a
+ukroutes @ git+https://github.com/cjber/ukroutes@3b53dc1221f51d06ac5b2c640f57a5238cf0f312
     # via access-to-everything
 urllib3==2.2.2
     # via distributed

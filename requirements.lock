@@ -7,12 +7,18 @@
 #   all-features: false
 #   with-sources: false
 #   generate-hashes: false
+#   universal: false
 
 -e file:.
 aiohttp==3.9.5
     # via fsspec
 aiosignal==1.3.1
     # via aiohttp
+annotated-types==0.7.0
+    # via pydantic
+anyio==4.4.0
+    # via httpx
+    # via openai
 async-timeout==4.0.3
     # via aiohttp
 attrs==23.2.0
@@ -20,6 +26,8 @@ attrs==23.2.0
 cachetools==5.4.0
     # via cudf-cu12
 certifi==2024.7.4
+    # via httpcore
+    # via httpx
     # via pyogrio
     # via pyproj
 click==8.1.7
@@ -29,8 +37,6 @@ click==8.1.7
 cloudpickle==3.0.0
     # via dask
     # via distributed
-contourpy==1.2.1
-    # via matplotlib
 cuda-python==12.5.0
     # via cudf-cu12
     # via pylibraft-cu12
@@ -45,8 +51,6 @@ cupy-cuda12x==13.2.0
     # via cudf-cu12
     # via cugraph-cu12
     # via dask-cudf-cu12
-cycler==0.12.1
-    # via matplotlib
 dask==2024.5.1
     # via dask-expr
     # via distributed
@@ -62,12 +66,14 @@ distributed==2024.5.1
     # via rapids-dask-dependency
 distributed-ucxx-cu12==0.38.0
     # via raft-dask-cu12
-fastexcel==0.10.4
+distro==1.9.0
+    # via openai
+exceptiongroup==1.2.2
+    # via anyio
+fastexcel==0.11.5
     # via access-to-everything
 fastrlock==0.8.2
     # via cupy-cuda12x
-fonttools==4.53.1
-    # via matplotlib
 frozenlist==1.4.1
     # via aiohttp
     # via aiosignal
@@ -77,17 +83,28 @@ fsspec==2024.6.1
     # via dask
     # via dask-cudf-cu12
 geopandas==1.0.1
+    # via h3pandas
     # via ukroutes
+h11==0.14.0
+    # via httpcore
+h3==3.7.7
+    # via h3pandas
+h3pandas==0.2.6
+    # via access-to-everything
+httpcore==1.0.5
+    # via httpx
+httpx==0.27.0
+    # via openai
 idna==3.7
+    # via anyio
+    # via httpx
     # via yarl
-importlib-metadata==8.0.0
+importlib-metadata==8.1.0
     # via dask
 jinja2==3.1.4
     # via distributed
 joblib==1.4.2
     # via raft-dask-cu12
-kiwisolver==1.4.5
-    # via matplotlib
 libucx-cu12==1.15.0.post1
     # via ucx-py-cu12
     # via ucxx-cu12
@@ -100,8 +117,6 @@ markdown-it-py==3.0.0
     # via rich
 markupsafe==2.1.5
     # via jinja2
-matplotlib==3.9.1
-    # via access-to-everything
 mdurl==0.1.2
     # via markdown-it-py
 msgpack==1.0.8
@@ -117,14 +132,13 @@ numba==0.60.0
     # via raft-dask-cu12
     # via rmm-cu12
 numpy==1.26.4
-    # via contourpy
     # via cudf-cu12
     # via cugraph-cu12
     # via cupy-cuda12x
     # via dask-cuda
     # via dask-cudf-cu12
     # via geopandas
-    # via matplotlib
+    # via h3pandas
     # via numba
     # via pandas
     # via pyarrow
@@ -138,12 +152,13 @@ numpy==1.26.4
     # via ucxx-cu12
 nvtx==0.2.10
     # via cudf-cu12
+openai==1.37.1
+    # via access-to-everything
 packaging==24.1
     # via cudf-cu12
     # via dask
     # via distributed
     # via geopandas
-    # via matplotlib
     # via pyogrio
 pandas==2.2.2
     # via cudf-cu12
@@ -151,11 +166,10 @@ pandas==2.2.2
     # via dask-cudf-cu12
     # via dask-expr
     # via geopandas
+    # via h3pandas
 partd==1.4.2
     # via dask
-pillow==10.4.0
-    # via matplotlib
-polars==1.2.0
+polars==1.2.1
     # via ukroutes
 psutil==6.0.0
     # via distributed
@@ -163,6 +177,10 @@ pyarrow==16.1.0
     # via cudf-cu12
     # via dask-expr
     # via fastexcel
+pydantic==2.8.2
+    # via openai
+pydantic-core==2.20.1
+    # via pydantic
 pygments==2.18.0
     # via rich
 pylibcugraph-cu12==24.6.1
@@ -179,19 +197,12 @@ pynvml==11.4.1
 pyogrio==0.9.0
     # via geopandas
     # via ukroutes
-pyparsing==3.1.2
-    # via matplotlib
 pyproj==3.6.1
     # via geopandas
-pyqt6==6.7.0
-    # via access-to-everything
-pyqt6-qt6==6.7.2
-    # via pyqt6
-pyqt6-sip==13.8.0
-    # via pyqt6
 python-dateutil==2.9.0.post0
-    # via matplotlib
     # via pandas
+python-dotenv==1.0.1
+    # via access-to-everything
 pytz==2024.1
     # via pandas
 pyyaml==6.0.1
@@ -217,8 +228,13 @@ scipy==1.14.0
     # via ukroutes
 shapely==2.0.5
     # via geopandas
+    # via h3pandas
 six==1.16.0
     # via python-dateutil
+sniffio==1.3.1
+    # via anyio
+    # via httpx
+    # via openai
 sortedcontainers==2.4.0
     # via distributed
 tblib==3.0.0
@@ -230,9 +246,15 @@ toolz==0.12.1
 tornado==6.4.1
     # via distributed
 tqdm==4.66.4
+    # via openai
     # via ukroutes
 typing-extensions==4.12.2
+    # via anyio
     # via cudf-cu12
+    # via h3pandas
+    # via openai
+    # via pydantic
+    # via pydantic-core
 tzdata==2024.1
     # via pandas
 ucx-py-cu12==0.38.0
@@ -240,7 +262,7 @@ ucx-py-cu12==0.38.0
     # via raft-dask-cu12
 ucxx-cu12==0.38.0
     # via distributed-ucxx-cu12
-ukroutes @ git+https://github.com/cjber/ukroutes@866b57d01779af83843dc5b1c2dcdf61cdd8f82a
+ukroutes @ git+https://github.com/cjber/ukroutes@3b53dc1221f51d06ac5b2c640f57a5238cf0f312
     # via access-to-everything
 urllib3==2.2.2
     # via distributed
