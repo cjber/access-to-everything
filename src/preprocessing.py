@@ -369,6 +369,21 @@ def process_bluespace():
     bs.to_parquet(Paths.PROCESSED / "bluespace.parquet", index=False)
 
 
+def process_overture():
+    overture = pl.read_parquet(
+        Paths.RAW / "overture" / "places_uk_2024_07_22-categories.parquet"
+    ).filter(pl.col("main_category") != "landmark_and_historical_building")
+    overture
+
+    categories = overture["low_category"].unique().to_list()
+    for category in categories:
+        overture.filter(pl.col("low_category") == category).select(
+            ["id", "easting", "northing"]
+        ).write_parquet(
+            Paths.PROCESSED / f"overture_{category.lower().replace(' ', '_')}.parquet"
+        )
+
+
 def main():
     process_postcodes()
     postcodes = pl.read_parquet(Paths.PROCESSED / "onspd" / "postcodes.parquet")
@@ -384,6 +399,7 @@ def main():
     process_evpoints()
     process_trainstations()
     process_bluespace()
+    process_overture()
 
     _ = process_oproad(outdir=Paths.PROCESSED / "oproad")
 
