@@ -1,13 +1,14 @@
 from pathlib import Path
+
+import geopandas as gpd
 import h3pandas
 import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
-import geopandas as gpd
 import pandas as pd
 
 breaks = [0, 1, 5, 10, 15, 30, float("inf")]
 
-csv_files = list(Path("./data/out/").rglob("*.csv"))
+csv_files = list(Path("./data/out/").rglob("*.parquet"))
 
 # Determine the number of rows and columns for subplots
 n_files = len(csv_files)
@@ -20,7 +21,7 @@ vmin = float("inf")
 vmax = float("-inf")
 
 for i, file in enumerate(csv_files):
-    df = pd.read_csv(file)
+    df = pd.read_parquet(file)
     gdf = gpd.GeoDataFrame(
         df, geometry=gpd.points_from_xy(df.easting, df.northing), crs=27700
     ).to_crs(4326)
@@ -56,4 +57,4 @@ for j in range(i + 1, len(axes)):
 # cbar.set_label("Deciles")
 plt.tight_layout()
 # plt.subplots_adjust(bottom=0.25, hspace=0.1)
-plt.show()
+plt.savefig("./dists.png")
