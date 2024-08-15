@@ -10,10 +10,6 @@
 #   universal: false
 
 -e file:.
-aiohttp==3.9.5
-    # via fsspec
-aiosignal==1.3.1
-    # via aiohttp
 annotated-types==0.7.0
     # via pydantic
 anyio==4.4.0
@@ -21,60 +17,18 @@ anyio==4.4.0
     # via openai
 asttokens==2.4.1
     # via stack-data
-async-timeout==4.0.3
-    # via aiohttp
-attrs==23.2.0
-    # via aiohttp
-cachetools==5.4.0
-    # via cudf-cu12
 certifi==2024.7.4
     # via httpcore
     # via httpx
     # via pyogrio
     # via pyproj
-click==8.1.7
-    # via dask
-    # via dask-cuda
-    # via distributed
-cloudpickle==3.0.0
-    # via dask
-    # via distributed
 contourpy==1.2.1
     # via matplotlib
-cuda-python==12.5.0
-    # via cudf-cu12
-    # via pylibraft-cu12
-    # via rmm-cu12
-cudf-cu12==24.6.1
-    # via cugraph-cu12
-    # via dask-cudf-cu12
-    # via ukroutes
-cugraph-cu12==24.6.1
-    # via ukroutes
-cupy-cuda12x==13.2.0
-    # via cudf-cu12
-    # via cugraph-cu12
-    # via dask-cudf-cu12
 cycler==0.12.1
     # via matplotlib
-dask==2024.5.1
-    # via dask-expr
-    # via distributed
-    # via rapids-dask-dependency
-dask-cuda==24.6.0
-    # via cugraph-cu12
-    # via raft-dask-cu12
-dask-cudf-cu12==24.6.1
-    # via cugraph-cu12
-dask-expr==1.1.1
-    # via rapids-dask-dependency
 decorator==5.1.1
     # via ipdb
     # via ipython
-distributed==2024.5.1
-    # via rapids-dask-dependency
-distributed-ucxx-cu12==0.38.0
-    # via raft-dask-cu12
 distro==1.9.0
     # via openai
 exceptiongroup==1.2.2
@@ -84,21 +38,10 @@ executing==2.0.1
     # via stack-data
 fastexcel==0.11.5
     # via access-to-everything
-fastrlock==0.8.2
-    # via cupy-cuda12x
 fonttools==4.53.1
     # via matplotlib
-frozenlist==1.4.1
-    # via aiohttp
-    # via aiosignal
-fsspec==2024.6.1
-    # via cudf-cu12
-    # via cugraph-cu12
-    # via dask
-    # via dask-cudf-cu12
 geopandas==1.0.1
     # via h3pandas
-    # via ukroutes
 h11==0.14.0
     # via httpcore
 h3==3.7.7
@@ -112,131 +55,65 @@ httpx==0.27.0
 idna==3.7
     # via anyio
     # via httpx
-    # via yarl
-importlib-metadata==8.1.0
-    # via dask
 ipdb==0.13.13
 ipython==8.26.0
     # via ipdb
 jedi==0.19.1
     # via ipython
-jinja2==3.1.4
-    # via distributed
-joblib==1.4.2
-    # via raft-dask-cu12
+jiter==0.5.0
+    # via openai
 kiwisolver==1.4.5
     # via matplotlib
-libucx-cu12==1.15.0.post1
-    # via ucx-py-cu12
-    # via ucxx-cu12
-llvmlite==0.43.0
-    # via numba
-locket==1.0.0
-    # via distributed
-    # via partd
-markdown-it-py==3.0.0
-    # via rich
-markupsafe==2.1.5
-    # via jinja2
-matplotlib==3.9.1
+matplotlib==3.9.2
 matplotlib-inline==0.1.7
     # via ipython
-mdurl==0.1.2
-    # via markdown-it-py
-msgpack==1.0.8
-    # via distributed
-multidict==6.0.5
-    # via aiohttp
-    # via yarl
-numba==0.60.0
-    # via cudf-cu12
-    # via cugraph-cu12
-    # via dask-cuda
-    # via distributed-ucxx-cu12
-    # via raft-dask-cu12
-    # via rmm-cu12
-numpy==1.26.4
+networkx==3.3
+    # via ukroutes
+numpy==2.0.1
     # via contourpy
-    # via cudf-cu12
-    # via cugraph-cu12
-    # via cupy-cuda12x
-    # via dask-cuda
-    # via dask-cudf-cu12
     # via geopandas
     # via h3pandas
     # via matplotlib
-    # via numba
     # via pandas
     # via pyarrow
-    # via pylibraft-cu12
     # via pyogrio
-    # via raft-dask-cu12
-    # via rmm-cu12
     # via scipy
     # via shapely
-    # via ucx-py-cu12
-    # via ucxx-cu12
-nvtx==0.2.10
-    # via cudf-cu12
-openai==1.37.1
+openai==1.40.6
     # via access-to-everything
 packaging==24.1
-    # via cudf-cu12
-    # via dask
-    # via distributed
     # via geopandas
     # via matplotlib
     # via pyogrio
 pandas==2.2.2
-    # via cudf-cu12
-    # via dask-cuda
-    # via dask-cudf-cu12
-    # via dask-expr
     # via geopandas
     # via h3pandas
+    # via ukroutes
 parso==0.8.4
     # via jedi
-partd==1.4.2
-    # via dask
 pexpect==4.9.0
     # via ipython
 pillow==10.4.0
     # via matplotlib
-polars==1.2.1
-    # via ukroutes
+polars==1.4.1
+    # via access-to-everything
 prompt-toolkit==3.0.47
     # via ipython
-psutil==6.0.0
-    # via distributed
 ptyprocess==0.7.0
     # via pexpect
 pure-eval==0.2.3
     # via stack-data
-pyarrow==16.1.0
-    # via cudf-cu12
-    # via dask-expr
+pyarrow==17.0.0
     # via fastexcel
+    # via ukroutes
 pydantic==2.8.2
     # via openai
 pydantic-core==2.20.1
     # via pydantic
 pygments==2.18.0
     # via ipython
-    # via rich
-pylibcugraph-cu12==24.6.1
-    # via cugraph-cu12
-pylibraft-cu12==24.6.0
-    # via pylibcugraph-cu12
-    # via raft-dask-cu12
-pynvjitlink-cu12==0.2.3
-    # via cudf-cu12
-pynvml==11.4.1
-    # via dask-cuda
-    # via ucx-py-cu12
-    # via ucxx-cu12
 pyogrio==0.9.0
     # via geopandas
-    # via ukroutes
 pyparsing==3.1.2
     # via matplotlib
 pyproj==3.6.1
@@ -253,25 +130,6 @@ python-dotenv==1.0.1
     # via access-to-everything
 pytz==2024.1
     # via pandas
-pyyaml==6.0.1
-    # via dask
-    # via distributed
-raft-dask-cu12==24.6.0
-    # via cugraph-cu12
-rapids-dask-dependency==24.6.0
-    # via cugraph-cu12
-    # via dask-cuda
-    # via dask-cudf-cu12
-    # via distributed-ucxx-cu12
-    # via raft-dask-cu12
-rich==13.7.1
-    # via cudf-cu12
-rmm-cu12==24.6.0
-    # via cudf-cu12
-    # via cugraph-cu12
-    # via pylibcugraph-cu12
-    # via pylibraft-cu12
-    # via ucxx-cu12
 scipy==1.14.0
     # via ukroutes
 shapely==2.0.5
@@ -284,21 +142,11 @@ sniffio==1.3.1
     # via anyio
     # via httpx
     # via openai
-sortedcontainers==2.4.0
-    # via distributed
 stack-data==0.6.3
     # via ipython
-tblib==3.0.0
-    # via distributed
 tomli==2.0.1
     # via ipdb
-toolz==0.12.1
-    # via dask
-    # via distributed
-    # via partd
-tornado==6.4.1
-    # via distributed
-tqdm==4.66.4
+tqdm==4.66.5
     # via openai
     # via ukroutes
 traitlets==5.14.3
@@ -306,7 +154,6 @@ traitlets==5.14.3
     # via matplotlib-inline
 typing-extensions==4.12.2
     # via anyio
-    # via cudf-cu12
     # via h3pandas
     # via ipython
     # via openai
@@ -314,21 +161,7 @@ typing-extensions==4.12.2
     # via pydantic-core
 tzdata==2024.1
     # via pandas
-ucx-py-cu12==0.38.0
-    # via cugraph-cu12
-    # via raft-dask-cu12
-ucxx-cu12==0.38.0
-    # via distributed-ucxx-cu12
-ukroutes @ git+https://github.com/cjber/ukroutes@3b53dc1221f51d06ac5b2c640f57a5238cf0f312
+ukroutes @ git+https://github.com/cjber/ukroutes@28a8a4dacd83d032bb2cb0328f743890dd643a3a
     # via access-to-everything
-urllib3==2.2.2
-    # via distributed
 wcwidth==0.2.13
     # via prompt-toolkit
-yarl==1.9.4
-    # via aiohttp
-zict==3.0.0
-    # via dask-cuda
-    # via distributed
-zipp==3.19.2
-    # via importlib-metadata
