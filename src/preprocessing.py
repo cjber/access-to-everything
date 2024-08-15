@@ -10,11 +10,9 @@ import pandas as pd
 import polars as pl
 from pyproj import Transformer
 from shapely import MultiPolygon, Polygon
+from ukroutes.oproad.utils import process_oproad
 
 from src.common.utils import Config, Paths
-
-# from ukroutes.oproad.utils import process_oproad
-
 
 FORMAT = "%(message)s"
 logging.basicConfig(level="INFO", format=FORMAT, datefmt="[%X]")
@@ -142,7 +140,6 @@ def process_hospitals(postcodes):
     eng_csv_path = Paths.RAW / "nhs" / "hospitals_england.csv"
     if not eng_csv_path.exists():
         eng_csv = _read_zip_from_url(Config.NHS_ENG_FILES["hospitals"])
-        eng["column_3"].unique()
         (
             pl.read_csv(eng_csv, has_header=False)
             .select(["column_1", "column_10", "column_12"])
@@ -484,7 +481,7 @@ def main():
     process_bluespace()
     process_overture()
 
-    # _ = process_oproad(outdir=Paths.PROCESSED / "oproad")
+    _ = process_oproad(outdir=Paths.PROCESSED / "oproad")
 
 
 if __name__ == "__main__":

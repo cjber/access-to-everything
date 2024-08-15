@@ -2,8 +2,9 @@ import logging
 
 import pandas as pd
 from tqdm import tqdm
-from ukroutes.common.utils import Paths
 from ukroutes.routing import Route
+
+from src.common.utils import Paths
 
 FORMAT = "%(message)s"
 logging.basicConfig(level="INFO", format=FORMAT, datefmt="[%X]")
