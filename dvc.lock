@@ -1,0 +1,274 @@
+schema: '2.0'
+stages:
+  preprocessing:
+    cmd: python -m src.preprocessing
+    deps:
+    - path: data/raw/education
+      hash: md5
+      md5: 00da8535348771ff612110bd2c0509dc.dir
+      size: 51983141
+      nfiles: 11
+    - path: data/raw/greenspace
+      hash: md5
+      md5: 85111c2e07037a38d0011bd1f1e46925.dir
+      size: 127086592
+      nfiles: 1
+    - path: data/raw/nhs
+      hash: md5
+      md5: 09540a023811809522bf9d0e4f22f8a2.dir
+      size: 290556
+      nfiles: 9
+    - path: data/raw/onspd
+      hash: md5
+      md5: b8d60f9c098d60850218dde5b7e8d616.dir
+      size: 1623519126
+      nfiles: 1
+    - path: data/raw/oproad
+      hash: md5
+      md5: 8cb00fc23822c3cd0a38a9e1a4175adb.dir
+      size: 2097531024
+      nfiles: 2
+    - path: data/raw/osm
+      hash: md5
+      md5: 658dadbe59bcea3e8f9bb0aded000458.dir
+      size: 3235852723
+      nfiles: 8
+    - path: data/raw/overture
+      hash: md5
+      md5: f9b072215a74d8b2c49a04c81e196dd5.dir
+      size: 426960512
+      nfiles: 7
+    - path: data/raw/transport
+      hash: md5
+      md5: cddda14894091202a993955aaa5fa028.dir
+      size: 128884373
+      nfiles: 3
+    - path: src/preprocessing.py
+      hash: md5
+      md5: a09f39ba1455c6511876875109957f12
+      size: 17994
+    outs:
+    - path: data/processed/bluespace.parquet
+      hash: md5
+      md5: a9a445e7a98f18ce8c9d3232416b473c
+      size: 39256449
+    - path: data/processed/busstops.parquet
+      hash: md5
+      md5: 4bcf5346730d63936b87d106b9247a59
+      size: 4015734
+    - path: data/processed/cafes.parquet
+      hash: md5
+      md5: 74c21d70979838d7140e6c5db0b940f7
+      size: 3777352
+    - path: data/processed/convenience_stores.parquet
+      hash: md5
+      md5: 2910e84e36e573a21ba53e3653e21787
+      size: 2784175
+    - path: data/processed/dentists.parquet
+      hash: md5
+      md5: 86fd696ed347f769f714d43deee51ea2
+      size: 11024
+    - path: data/processed/evpoints.parquet
+      hash: md5
+      md5: 6f76078eef88be65d098f73c54f638dc
+      size: 1224503
+    - path: data/processed/gppracs.parquet
+      hash: md5
+      md5: 8dca1a4c61aa18f7fc234c46aa6799f8
+      size: 31990
+    - path: data/processed/greenspace.parquet
+      hash: md5
+      md5: 256395db442299267079ba4e44de7d73
+      size: 9007025
+    - path: data/processed/hospitals.parquet
+      hash: md5
+      md5: f97669c0c434182ccd038bae8d74fb4e
+      size: 22709
+    - path: data/processed/onspd/postcodes.parquet
+      hash: md5
+      md5: 3b3f0b8d7843132b76142b10e4b02884
+      size: 14307943
+    - path: data/processed/oproad/edges.parquet
+      hash: md5
+      md5: 686b6d63f3a16ac8c4f3d34c4e2bfffa
+      size: 41810575
+    - path: data/processed/oproad/nodes.parquet
+      hash: md5
+      md5: f3da631e9e8ff9c490e1ceaab0029714
+      size: 53424573
+    - path: data/processed/pharmacies.parquet
+      hash: md5
+      md5: b3a32a2549528f6442767e7cb63eabf4
+      size: 72402
+    - path: data/processed/post_offices.parquet
+      hash: md5
+      md5: 037f335de1d5e2388ff786b96f2edb01
+      size: 1532363
+    - path: data/processed/primary_schools.parquet
+      hash: md5
+      md5: c37a239eecbab476947620948b31db5a
+      size: 154235
+    - path: data/processed/pubs.parquet
+      hash: md5
+      md5: e57a05831befadfc17fb6827cb5ad884
+      size: 4548301
+    - path: data/processed/restaurants.parquet
+      hash: md5
+      md5: ca0226faf6c1353d9ce895d809274bb0
+      size: 8019265
+    - path: data/processed/secondary_schools.parquet
+      hash: md5
+      md5: 972aa7ba58a891cfbae58475a655c0c0
+      size: 30551
+    - path: data/processed/trainstations.parquet
+      hash: md5
+      md5: 705ac6cd460bab29c698595e94c0ad5a
+      size: 57565
+  routing:
+    cmd: python -m src.routing
+    deps:
+    - path: data/processed/bluespace.parquet
+      hash: md5
+      md5: a9a445e7a98f18ce8c9d3232416b473c
+      size: 39256449
+    - path: data/processed/busstops.parquet
+      hash: md5
+      md5: 4bcf5346730d63936b87d106b9247a59
+      size: 4015734
+    - path: data/processed/cafes.parquet
+      hash: md5
+      md5: 74c21d70979838d7140e6c5db0b940f7
+      size: 3777352
+    - path: data/processed/convenience_stores.parquet
+      hash: md5
+      md5: 2910e84e36e573a21ba53e3653e21787
+      size: 2784175
+    - path: data/processed/dentists.parquet
+      hash: md5
+      md5: 86fd696ed347f769f714d43deee51ea2
+      size: 11024
+    - path: data/processed/evpoints.parquet
+      hash: md5
+      md5: 6f76078eef88be65d098f73c54f638dc
+      size: 1224503
+    - path: data/processed/gppracs.parquet
+      hash: md5
+      md5: 8dca1a4c61aa18f7fc234c46aa6799f8
+      size: 31990
+    - path: data/processed/greenspace.parquet
+      hash: md5
+      md5: 256395db442299267079ba4e44de7d73
+      size: 9007025
+    - path: data/processed/hospitals.parquet
+      hash: md5
+      md5: f97669c0c434182ccd038bae8d74fb4e
+      size: 22709
+    - path: data/processed/onspd/postcodes.parquet
+      hash: md5
+      md5: 3b3f0b8d7843132b76142b10e4b02884
+      size: 14307943
+    - path: data/processed/oproad/edges.parquet
+      hash: md5
+      md5: 686b6d63f3a16ac8c4f3d34c4e2bfffa
+      size: 41810575
+    - path: data/processed/oproad/nodes.parquet
+      hash: md5
+      md5: f3da631e9e8ff9c490e1ceaab0029714
+      size: 53424573
+    - path: data/processed/pharmacies.parquet
+      hash: md5
+      md5: b3a32a2549528f6442767e7cb63eabf4
+      size: 72402
+    - path: data/processed/post_offices.parquet
+      hash: md5
+      md5: 037f335de1d5e2388ff786b96f2edb01
+      size: 1532363
+    - path: data/processed/primary_schools.parquet
+      hash: md5
+      md5: c37a239eecbab476947620948b31db5a
+      size: 154235
+    - path: data/processed/pubs.parquet
+      hash: md5
+      md5: e57a05831befadfc17fb6827cb5ad884
+      size: 4548301
+    - path: data/processed/restaurants.parquet
+      hash: md5
+      md5: ca0226faf6c1353d9ce895d809274bb0
+      size: 8019265
+    - path: data/processed/secondary_schools.parquet
+      hash: md5
+      md5: 972aa7ba58a891cfbae58475a655c0c0
+      size: 30551
+    - path: data/processed/trainstations.parquet
+      hash: md5
+      md5: 705ac6cd460bab29c698595e94c0ad5a
+      size: 57565
+    - path: src/routing.py
+      hash: md5
+      md5: ffa2a5c5fd2eccd284bcd56870f17467
+      size: 1025
+    outs:
+    - path: data/out/bluespace_distances.parquet
+      hash: md5
+      md5: 162eccd2de0c06f9fe64a42970e0b683
+      size: 44396784
+    - path: data/out/busstops_distances.parquet
+      hash: md5
+      md5: 7a6da46de94ba0f105c32293dd52e874
+      size: 44275024
+    - path: data/out/cafes_distances.parquet
+      hash: md5
+      md5: f5352b71e04e8006cd6777fe7c4a0c93
+      size: 44408376
+    - path: data/out/convenience_stores_distances.parquet
+      hash: md5
+      md5: bbec9ad036392f104a5faab696f5d297
+      size: 44408205
+    - path: data/out/dentists_distances.parquet
+      hash: md5
+      md5: a4b4ec49058df23eb1d8ab523394d0d6
+      size: 44405603
+    - path: data/out/evpoints_distances.parquet
+      hash: md5
+      md5: e8c06acfdde11932067abea49c9765b4
+      size: 44408377
+    - path: data/out/gppracs_distances.parquet
+      hash: md5
+      md5: 51afb736fb8a8d3b053695df7aab0f50
+      size: 44402525
+    - path: data/out/greenspace_distances.parquet
+      hash: md5
+      md5: c07ad2a24633ff92eb6384e41de20965
+      size: 44408384
+    - path: data/out/hospitals_distances.parquet
+      hash: md5
+      md5: 14e716a286daafccce5db50da70c9383
+      size: 44405764
+    - path: data/out/pharmacies_distances.parquet
+      hash: md5
+      md5: 06f8c658fa63e413c4e5bc9071b71578
+      size: 44400216
+    - path: data/out/post_offices_distances.parquet
+      hash: md5
+      md5: 631bb4b6791df7889b809dcb668569a9
+      size: 44409029
+    - path: data/out/primary_schools_distances.parquet
+      hash: md5
+      md5: 8c60689e3a111914a0a314728fdc8d1e
+      size: 44389360
+    - path: data/out/pubs_distances.parquet
+      hash: md5
+      md5: 1e43f2e6c26400c10ef59cc483ebc580
+      size: 44408403
+    - path: data/out/restaurants_distances.parquet
+      hash: md5
+      md5: 4eb99b35a7b20732c65d6f9afea10501
+      size: 44408400
+    - path: data/out/secondary_schools_distances.parquet
+      hash: md5
+      md5: fcea3d6345331146c423132f82c48682
+      size: 44403475
+    - path: data/out/trainstations_distances.parquet
+      hash: md5
+      md5: d21c926765ed746126233c5afb7d113e
+      size: 44408375

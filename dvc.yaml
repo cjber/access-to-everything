@@ -1,0 +1,78 @@
+stages:
+  preprocessing:
+    cmd: python -m src.preprocessing
+    deps:
+      - src/preprocessing.py
+
+      - data/raw/education
+      - data/raw/greenspace
+      - data/raw/nhs
+      - data/raw/onspd
+      - data/raw/oproad
+      - data/raw/osm
+      - data/raw/overture
+      - data/raw/transport
+    outs:
+      - data/processed/onspd/postcodes.parquet
+      - data/processed/oproad/edges.parquet
+      - data/processed/oproad/nodes.parquet
+      - data/processed/bluespace.parquet
+      - data/processed/busstops.parquet
+      - data/processed/dentists.parquet
+      - data/processed/evpoints.parquet
+      - data/processed/gppracs.parquet
+      - data/processed/greenspace.parquet
+      - data/processed/hospitals.parquet
+      - data/processed/pharmacies.parquet
+      - data/processed/primary_schools.parquet
+      - data/processed/secondary_schools.parquet
+      - data/processed/trainstations.parquet
+      - data/processed/pubs.parquet
+      - data/processed/post_offices.parquet
+      - data/processed/restaurants.parquet
+      - data/processed/cafes.parquet
+      - data/processed/convenience_stores.parquet
+
+  routing:
+    cmd: python -m src.routing
+    deps:
+      - src/routing.py
+
+      - data/processed/onspd/postcodes.parquet
+      - data/processed/oproad/edges.parquet
+      - data/processed/oproad/nodes.parquet
+      - data/processed/bluespace.parquet
+      - data/processed/busstops.parquet
+      - data/processed/dentists.parquet
+      - data/processed/evpoints.parquet
+      - data/processed/gppracs.parquet
+      - data/processed/greenspace.parquet
+      - data/processed/hospitals.parquet
+      - data/processed/pharmacies.parquet
+      - data/processed/primary_schools.parquet
+      - data/processed/secondary_schools.parquet
+      - data/processed/trainstations.parquet
+      - data/processed/pubs.parquet
+      - data/processed/post_offices.parquet
+      - data/processed/restaurants.parquet
+      - data/processed/cafes.parquet
+      - data/processed/convenience_stores.parquet
+
+    outs:
+
+      - data/out/bluespace_distances.parquet
+      - data/out/busstops_distances.parquet
+      - data/out/dentists_distances.parquet
+      - data/out/evpoints_distances.parquet
+      - data/out/gppracs_distances.parquet
+      - data/out/greenspace_distances.parquet
+      - data/out/hospitals_distances.parquet
+      - data/out/pharmacies_distances.parquet
+      - data/out/primary_schools_distances.parquet
+      - data/out/secondary_schools_distances.parquet
+      - data/out/trainstations_distances.parquet
+      - data/out/pubs_distances.parquet
+      - data/out/post_offices_distances.parquet
+      - data/out/restaurants_distances.parquet
+      - data/out/cafes_distances.parquet
+      - data/out/convenience_stores_distances.parquet
