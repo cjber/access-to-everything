@@ -9,18 +9,16 @@ import geopandas as gpd
 import pandas as pd
 import polars as pl
 from pyproj import Transformer
-from rich.logging import RichHandler
 from shapely import MultiPolygon, Polygon
-from ukroutes.oproad.utils import process_oproad
 
 from src.common.utils import Config, Paths
 
-FORMAT = "%(message)s"
-logging.basicConfig(
-    level="INFO", format=FORMAT, datefmt="[%X]", handlers=[RichHandler()]
-)
+# from ukroutes.oproad.utils import process_oproad
 
-logger = logging.getLogger("rich")
+
+FORMAT = "%(message)s"
+logging.basicConfig(level="INFO", format=FORMAT, datefmt="[%X]")
+logger = logging.getLogger(__name__)
 
 
 def _read_zip_from_url(filename: str):
@@ -68,16 +66,88 @@ def process_postcodes():
     )
 
 
+def _welsh_hospitals():
+    # view-source:https://111.wales.nhs.uk/localservices/?s=Hospital&pc=n&sort=default
+
+    transformer = Transformer.from_crs("epsg:4326", "epsg:27700")
+    data = [
+        [51.4133444539694, -3.28377486575934],
+        [51.4138556369325, -3.28514814376831],
+        [51.4849474783373, -3.1612482472817],
+        [51.5062657139985, -3.19123103037047],
+        [51.5112804272092, -3.58044089655397],
+        [51.51799663945, -3.57236981391907],
+        [51.547415888765, -3.38999753947103],
+        [51.6388065075537, -2.68531304159188],
+        [51.7459258734778, -3.38833204579813],
+        [51.7637316359143, -3.38450143362687],
+        [51.7734643262788, -3.20110930158957],
+        [51.7975016321807, -4.96711832888589],
+        [51.8127008240244, -4.96524095535278],
+        [51.8240075605359, -3.03295606642652],
+        [51.8323876067318, -2.506967999478],
+        [51.8324663287129, -2.99364155631735],
+        [51.8565812621567, -4.33254807844281],
+        [51.8659306591827, -2.23069399061431],
+        [51.9486924983437, -3.38355491148454],
+        [51.994385211708, -4.97824698404466],
+        [51.9981794720837, -3.79578634614093],
+        [51.9987670815114, -3.79677414894104],
+        [52.2416535184377, -3.37628748618039],
+        [52.2434963517339, -3.3768904209137],
+        [52.2435883224226, -4.2552387714386],
+        [52.3416287602581, -3.04823575371185],
+        [52.3445166504757, -3.04704144819948],
+        [52.4160909073528, -4.07179713249207],
+        [52.4194934839656, -4.08155885269258],
+        [52.4521418771372, -3.53839414737319],
+        [52.5914029504628, -3.84453192591482],
+        [52.7404087470174, -3.880553486068],
+        [53.1298046783258, -4.26160487621684],
+        [53.1857410134828, -3.40858876471376],
+        [53.2085134951299, -2.89653389729877],
+        [53.2563079735153, -4.30309266393227],
+        [53.2659853886672, -3.57910547727238],
+        [53.2690529053159, -3.21620301462873],
+        [53.2879810001708, -3.70920633150231],
+        [53.304111060094, -4.6147000124997],
+        [53.3110990636943, -3.82670129751938],
+    ]
+
+    return (
+        pl.DataFrame(
+            {
+                "code": [f"w{i}" for i in range(len(data))],
+                "long": [row[1] for row in data],
+                "lat": [row[0] for row in data],
+            }
+        )
+        .with_columns(
+            pl.struct(pl.col("lat"), pl.col("long"))
+            .map_elements(
+                lambda row: transformer.transform(row["lat"], row["long"]),
+                return_dtype=pl.List(pl.Float64),
+            )
+            .alias("coords")
+        )
+        .with_columns(
+            pl.col("coords").list[0].alias("easting").cast(pl.Int64),
+            pl.col("coords").list[1].alias("northing").cast(pl.Int64),
+        )
+        .select(["code", "easting", "northing"])
+    )
+
+
 def process_hospitals(postcodes):
-    logger.info("Processing hospitals...")
     eng_csv_path = Paths.RAW / "nhs" / "hospitals_england.csv"
     if not eng_csv_path.exists():
         eng_csv = _read_zip_from_url(Config.NHS_ENG_FILES["hospitals"])
+        eng["column_3"].unique()
         (
             pl.read_csv(eng_csv, has_header=False)
             .select(["column_1", "column_10", "column_12"])
             .rename({"column_1": "code", "column_10": "postcode", "column_12": "close"})
-            .filter(pl.col("close") != "")
+            .filter(pl.col("close") == "")
             .drop("close")
             .write_csv(eng_csv_path)
         )
@@ -92,13 +162,16 @@ def process_hospitals(postcodes):
             .write_csv(scot_csv_path)
         )
     scot = pl.read_csv(scot_csv_path)
-    (
-        pl.concat([eng, scot])
-        .with_columns(pl.col("postcode").str.replace(" ", ""))
-        .join(postcodes, on="postcode")
-        .select(["code", "easting", "northing"])
-        .write_parquet(Paths.PROCESSED / "hospitals.parquet")
-    )
+    welsh = _welsh_hospitals()
+    pl.concat(
+        [
+            pl.concat([eng, scot])
+            .with_columns(pl.col("postcode").str.replace(" ", ""))
+            .join(postcodes, on="postcode")
+            .select(["code", "easting", "northing"]),
+            welsh,
+        ]
+    ).write_parquet(Paths.PROCESSED / "hospitals.parquet")
 
 
 def process_gppracs(postcodes):
@@ -110,7 +183,7 @@ def process_gppracs(postcodes):
             pl.read_csv(eng_csv, has_header=False)
             .select(["column_1", "column_10", "column_12"])
             .rename({"column_1": "code", "column_10": "postcode", "column_12": "close"})
-            .filter(pl.col("close") != "")
+            .filter(pl.col("close") == "")
             .drop("close")
             .write_csv(eng_csv_path)
         )
@@ -144,7 +217,7 @@ def process_dentists(postcodes):
             pl.read_csv(eng_csv, has_header=False)
             .select(["column_1", "column_10", "column_12"])
             .rename({"column_1": "code", "column_10": "postcode", "column_12": "close"})
-            .filter(pl.col("close") != "")
+            .filter(pl.col("close") == "")
             .drop("close")
             .write_csv(eng_csv_path)
         )
@@ -320,6 +393,12 @@ def process_evpoints():
         )
         .select(["chargeDeviceID", "easting", "northing"])
         .drop_nulls(["easting", "northing"])
+        .filter(
+            (pl.col("easting") > 0)
+            & (pl.col("northing") > 0)
+            & pl.col("easting").is_finite()
+            & pl.col("northing").is_finite()
+        )
         .write_parquet(Paths.PROCESSED / "evpoints.parquet")
     )
 
@@ -350,6 +429,7 @@ def process_trainstations():
 
 
 def process_bluespace():
+    logger.info("Processing bluespace...")
     bluespace = gpd.read_parquet(Paths.RAW / "osm" / "gb-water.parquet")
     coast = (
         gpd.read_parquet(Paths.RAW / "osm" / "gb-coast.parquet")
@@ -370,18 +450,21 @@ def process_bluespace():
 
 
 def process_overture():
+    logger.info("Processing Overture...")
     overture = pl.read_parquet(
         Paths.RAW / "overture" / "places_uk_2024_07_22-categories.parquet"
     ).filter(pl.col("main_category") != "landmark_and_historical_building")
-    overture
 
     categories = overture["low_category"].unique().to_list()
     for category in categories:
-        overture.filter(pl.col("low_category") == category).select(
+        out = overture.filter(pl.col("low_category") == category).select(
             ["id", "easting", "northing"]
-        ).write_parquet(
-            Paths.PROCESSED / f"overture_{category.lower().replace(' ', '_')}.parquet"
         )
+        if len(out) > 5000:
+            out.write_parquet(
+                Paths.PROCESSED
+                / f"overture_{category.lower().replace(' ', '_')}.parquet"
+            )
 
 
 def main():
@@ -401,7 +484,7 @@ def main():
     process_bluespace()
     process_overture()
 
-    _ = process_oproad(outdir=Paths.PROCESSED / "oproad")
+    # _ = process_oproad(outdir=Paths.PROCESSED / "oproad")
 
 
 if __name__ == "__main__":
