@@ -432,12 +432,12 @@ def process_bluespace():
         gpd.read_parquet(Paths.RAW / "osm" / "gb-coast.parquet")
         .to_crs(27700)
         .get_coordinates()
-        .round(-3)
+        .round()
     )
     bs = bluespace[
         (bluespace.geometry.apply(lambda x: isinstance(x, (MultiPolygon, Polygon))))
     ].to_crs(27700)
-    bs = bs[bs.area > 10_000].get_coordinates().round(-3)
+    bs = bs[bs.area > 10_000].get_coordinates().round()
     bs = (
         pd.concat([coast, bs])
         .drop_duplicates()
@@ -451,17 +451,29 @@ def process_overture():
     overture = pl.read_parquet(
         Paths.RAW / "overture" / "places_uk_2024_07_22-categories.parquet"
     ).filter(pl.col("main_category") != "landmark_and_historical_building")
-
-    categories = overture["low_category"].unique().to_list()
-    for category in categories:
-        out = overture.filter(pl.col("low_category") == category).select(
-            ["id", "easting", "northing"]
+    pubs = overture.filter(
+        (pl.col("main_category") == "pub")
+        | pl.col("alternate_category").str.split("|").list.contains("pub")
+    )
+    restaurant = overture.filter((pl.col("main_category").str.contains("restaurant")))
+    post_office = overture.filter(
+        (pl.col("main_category") == "post_office")
+        | (pl.col("alternate_category").str.split("|").list.contains("post_office"))
+    )
+    cafes = overture.filter(pl.col("main_category").is_in(["cafe", "coffee_shop"]))
+    convenience_stores = overture.filter(
+        (pl.col("main_category") == "convenience_store")
+        | (
+            pl.col("alternate_category")
+            .str.split("|")
+            .list.contains("convenience_store")
         )
-        if len(out) > 5000:
-            out.write_parquet(
-                Paths.PROCESSED
-                / f"overture_{category.lower().replace(' ', '_')}.parquet"
-            )
+    )
+    pubs.write_parquet(Paths.PROCESSED / "pubs.parquet")
+    restaurant.write_parquet(Paths.PROCESSED / "restaurants.parquet")
+    post_office.write_parquet(Paths.PROCESSED / "post_offices.parquet")
+    cafes.write_parquet(Paths.PROCESSED / "cafes.parquet")
+    convenience_stores.write_parquet(Paths.PROCESSED / "convenience_stores.parquet")
 
 
 def main():
@@ -481,7 +493,7 @@ def main():
     process_bluespace()
     process_overture()
 
-    _ = process_oproad(outdir=Paths.PROCESSED / "oproad")
+    _ = process_oproad(save=True)
 
 
 if __name__ == "__main__":
