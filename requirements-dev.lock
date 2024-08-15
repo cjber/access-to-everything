@@ -42,6 +42,7 @@ fonttools==4.53.1
     # via matplotlib
 geopandas==1.0.1
     # via h3pandas
+    # via ukroutes
 h11==0.14.0
     # via httpcore
 h3==3.7.7
@@ -95,8 +96,9 @@ pexpect==4.9.0
     # via ipython
 pillow==10.4.0
     # via matplotlib
-polars==1.4.1
+polars==1.5.0
     # via access-to-everything
+    # via ukroutes
 prompt-toolkit==3.0.47
     # via ipython
 ptyprocess==0.7.0
@@ -161,7 +163,7 @@ typing-extensions==4.12.2
     # via pydantic-core
 tzdata==2024.1
     # via pandas
-ukroutes @ git+https://github.com/cjber/ukroutes@28a8a4dacd83d032bb2cb0328f743890dd643a3a
+ukroutes @ git+https://github.com/cjber/ukroutes@07bf12db0ecac05c97e5aa568fea7bc94e7362a3
     # via access-to-everything
 wcwidth==0.2.13
     # via prompt-toolkit
